@@ -1,0 +1,55 @@
+---
+title: "STAT 301-3 Data Memo"
+author: "Kriti Shah, Enat Ayele, Kranti Rumalla, Angie Jang"
+date: "4/3/2021"
+output: 
+  html_document:
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+```
+
+```{r}
+library(tidyverse)
+library(skimr)
+
+```
+
+## Proposed Timeline:
+- April 10: We expect to have our dataset loaded into R. 
+
+- April 17: We expect to start our EDA and analysis.
+
+- April 21: We expect to submit our final project EDA update. We also plan to have weekly check-in meetings as a group.
+
+- June 9: We expect to submit our final project.
+
+## About the Data
+
+The dataset contains information about COVID-19 hospitalizations. We expect to use the data to discern trends in key variables, such as length of stay. The dataset includes variables such as the type of hospital, the city, region, how full the hospitals are, the ward type, and the bed grade. We are collecting the data by downloading the set from Kaggle. We will be dealing with numerical and categorical variables.
+
+```{r}
+patients_data <- read_csv("data/unprocessed/train_data.csv")
+skim_without_charts(patients_data)
+```
+
+
+Upon reading in and skimming the data, most variables do not have missing values. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We plan to exclude `City_Code_Patient` in our analysis, but in the initial cleaning of the data, we will filter for only the rows that are not missing `Bed Grade`. We do not need to join two or more sources of data together.
+
+**Citation:**
+Prabhavlakar, Neha. (2020). AV: Healthcare Analytics II [Data Set]. <https://www.kaggle.com/nehaprabhavalkar/av-healthcare-analytics-ii>
+
+## Research Question
+
+Our research question is “How accurately can we predict the length of stay for each Covid-19 patient?” This question is predictive where we attempt to accurately predict the length of stay for each patient based on a variety of numerical and categorical variables including hospital type, age, bed grade, type of admission, and severity of illness. We would use a classification based approach. The response variable will be the length of stay. The variables that we suspect will be useful in modeling the response will be hospital type, available extra rooms, age, bed grade, admission type, and severity of illness.
+
+## Potential Difficulties
+
+One difficulty with this dataset is that a lot of the potentially numerical variables are categorical ‘buckets’, such as age ranges and length of stay ranges. As noted before, while there are only two variables with noticeable missingness, one of these variables will be excluded from analysis and the other will be filtered such that rows with missing values in that column will not be included in the analysis. After this cleaning, the dataset we use for training the models should not have any missingness. 
+
+<br>
