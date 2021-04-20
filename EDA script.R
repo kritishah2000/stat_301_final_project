@@ -57,6 +57,7 @@ ggplot(patients_data) +
 
 
 
+
 #Secondary Findings
 
   ##Standard variable explorations for the domain area that are unsurprising and mainly conducted out of convention. 
