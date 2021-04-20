@@ -2,12 +2,14 @@
 library(tidyverse)
 library(skimr)
 library(tidymodels)
+library(corrplot)
 
 #loading data
 patients_data <- read_csv("data/unprocessed/train_data.csv")
 
 #EDA
 skim_without_charts(patients_data)
+
 
 #Initial overview of data:
   ##source(s) and any relevant information concerning how the data was collected/formed
