@@ -2,9 +2,14 @@
 library(tidyverse)
 library(skimr)
 library(tidymodels)
+library(janitor)
+library(vcd)
 
 #loading data
-patients_data <- read_csv("data/unprocessed/train_data.csv")
+patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
+  clean_names()
+
+
 
 #EDA
 skim_without_charts(patients_data)
@@ -20,6 +25,7 @@ skim_without_charts(patients_data)
 
 
   ##Interesting/important relationships between response variable(s) and predictor variables.
+mosaic(Stay ~ Age + `BedGrade`, data = patients_data)
 
 
    ##Interesting/important relationships among predictor variables.
