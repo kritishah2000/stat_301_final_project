@@ -4,6 +4,8 @@ library(skimr)
 library(tidymodels)
 library(janitor)
 library(vcd)
+library(corrplot)
+
 
 #loading data
 patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
@@ -14,6 +16,7 @@ patients_data <- read_csv("data/unprocessed/train_data.csv") %>%
 #EDA
 skim_without_charts(patients_data)
 
+
 #Initial overview of data:
   ##source(s) and any relevant information concerning how the data was collected/formed
    ##Number of observations (n), number of features (p), analysis of missingness (amount and patterns)
@@ -21,14 +24,44 @@ skim_without_charts(patients_data)
 #Essential Findings (Important or Interesting)
   ##Thorough univariate investigation of response variable(s)
 
+ggplot(patients_data) +
+  geom_histogram(mapping = aes(Hospital_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Hospital_type_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Hospital_region_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Stay))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Stay))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Stay))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Stay))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(Stay))
+  
   ##Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
 
 
   ##Interesting/important relationships between response variable(s) and predictor variables.
+
 mosaic(Stay ~ Age + `BedGrade`, data = patients_data)
+
+#Hospital_type_Code, Hospital_region_code, `Available Extra Rooms in Hospital`, Department, Ward_Type**
+#
+
 
 
    ##Interesting/important relationships among predictor variables.
+
 
 
 
