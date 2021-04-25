@@ -217,11 +217,62 @@ pre code {
 <!-- rnb-text-begin -->
 <p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
 <p>##Initial overview of data</p>
+<p>###Thorough univariate investigation of response variable(s)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhzdGF5KSlcbmBgYCJ9 -->
+<pre class="r"><code>ggplot(patients_data) +
+  geom_bar(mapping = aes(stay))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>###Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9oaXN0b2dyYW0obWFwcGluZyA9IGFlcyhob3NwaXRhbF9jb2RlKSlcblxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhob3NwaXRhbF90eXBlX2NvZGUpKVxuXG5nZ3Bsb3QocGF0aWVudHNfZGF0YSkgK1xuICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKGhvc3BpdGFsX3JlZ2lvbl9jb2RlKSlcblxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhhdmFpbGFibGVfZXh0cmFfcm9vbXNfaW5faG9zcGl0YWwpKVxuXG5nZ3Bsb3QocGF0aWVudHNfZGF0YSkgK1xuICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKGRlcGFydG1lbnQpKVxuXG5nZ3Bsb3QocGF0aWVudHNfZGF0YSkgK1xuICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKHdhcmRfdHlwZSkpXG5cbmdncGxvdChwYXRpZW50c19kYXRhKSArXG4gIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMoYmVkX2dyYWRlKSlcblxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhzZXZlcml0eV9vZl9pbGxuZXNzKSlcblxuZ2dwbG90KHBhdGllbnRzX2RhdGEpICtcbiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyh2aXNpdG9yc193aXRoX3BhdGllbnQpKVxuXG5nZ3Bsb3QocGF0aWVudHNfZGF0YSkgK1xuICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKGFnZSkpXG5cbmdncGxvdChwYXRpZW50c19kYXRhKSArXG4gIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMoc2V2ZXJpdHlfb2ZfaWxsbmVzcykpXG5cbmdncGxvdChwYXRpZW50c19kYXRhKSArXG4gIGdlb21fYmFyKG1hcHBpbmcgPSBhZXModHlwZV9vZl9hZG1pc3Npb24pKVxuYGBgIn0= -->
+<pre class="r"><code>ggplot(patients_data) +
+  geom_histogram(mapping = aes(hospital_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(hospital_type_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(hospital_region_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(available_extra_rooms_in_hospital))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(department))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(ward_type))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(bed_grade))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(severity_of_illness))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(visitors_with_patient))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(age))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(severity_of_illness))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(type_of_admission))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <p>##Essential Findings (Important or Interesting)</p>
 <p>##Secondary Findings</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgoKIyNJbml0aWFsIG92ZXJ2aWV3IG9mIGRhdGEKCgoKCiMjRXNzZW50aWFsIEZpbmRpbmdzIChJbXBvcnRhbnQgb3IgSW50ZXJlc3RpbmcpCgoKCiMjU2Vjb25kYXJ5IEZpbmRpbmdzCgoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgoKIyNJbml0aWFsIG92ZXJ2aWV3IG9mIGRhdGEKCiMjI1Rob3JvdWdoIHVuaXZhcmlhdGUgaW52ZXN0aWdhdGlvbiBvZiByZXNwb25zZSB2YXJpYWJsZShzKQoKYGBge3J9CmdncGxvdChwYXRpZW50c19kYXRhKSArCiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhzdGF5KSkKYGBgCgojIyNUaG9yb3VnaCB1bml2YXJpYXRlIGludmVzdGlnYXRpb24gb2YgaW1wb3J0YW50IHByZWRpY3RvciB2YXJpYWJsZShzKSAtIG9uZXMgZWl0aGVyIGJlbGlldmVkIHRvIGJlIGltcG9ydGFudCAoZG9tYWluIGtub3dsZWRnZSkgb3IgaHlwb3RoZXNpemVkIHRvIGJlIGltcG9ydGFudC4gCgpgYGB7cn0KZ2dwbG90KHBhdGllbnRzX2RhdGEpICsKICBnZW9tX2hpc3RvZ3JhbShtYXBwaW5nID0gYWVzKGhvc3BpdGFsX2NvZGUpKQoKZ2dwbG90KHBhdGllbnRzX2RhdGEpICsKICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKGhvc3BpdGFsX3R5cGVfY29kZSkpCgpnZ3Bsb3QocGF0aWVudHNfZGF0YSkgKwogIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMoaG9zcGl0YWxfcmVnaW9uX2NvZGUpKQoKZ2dwbG90KHBhdGllbnRzX2RhdGEpICsKICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKGF2YWlsYWJsZV9leHRyYV9yb29tc19pbl9ob3NwaXRhbCkpCgpnZ3Bsb3QocGF0aWVudHNfZGF0YSkgKwogIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMoZGVwYXJ0bWVudCkpCgpnZ3Bsb3QocGF0aWVudHNfZGF0YSkgKwogIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMod2FyZF90eXBlKSkKCmdncGxvdChwYXRpZW50c19kYXRhKSArCiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhiZWRfZ3JhZGUpKQoKZ2dwbG90KHBhdGllbnRzX2RhdGEpICsKICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKHNldmVyaXR5X29mX2lsbG5lc3MpKQoKZ2dwbG90KHBhdGllbnRzX2RhdGEpICsKICBnZW9tX2JhcihtYXBwaW5nID0gYWVzKHZpc2l0b3JzX3dpdGhfcGF0aWVudCkpCgpnZ3Bsb3QocGF0aWVudHNfZGF0YSkgKwogIGdlb21fYmFyKG1hcHBpbmcgPSBhZXMoYWdlKSkKCmdncGxvdChwYXRpZW50c19kYXRhKSArCiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyhzZXZlcml0eV9vZl9pbGxuZXNzKSkKCmdncGxvdChwYXRpZW50c19kYXRhKSArCiAgZ2VvbV9iYXIobWFwcGluZyA9IGFlcyh0eXBlX29mX2FkbWlzc2lvbikpCmBgYAoKCiMjRXNzZW50aWFsIEZpbmRpbmdzIChJbXBvcnRhbnQgb3IgSW50ZXJlc3RpbmcpCgoKCiMjU2Vjb25kYXJ5IEZpbmRpbmdzCgoKCg==</div>
 
 
 
