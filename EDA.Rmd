@@ -8,7 +8,52 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 
 ##Initial overview of data
 
+###Thorough univariate investigation of response variable(s)
 
+```{r}
+ggplot(patients_data) +
+  geom_bar(mapping = aes(stay))
+```
+
+###Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
+
+```{r}
+ggplot(patients_data) +
+  geom_histogram(mapping = aes(hospital_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(hospital_type_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(hospital_region_code))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(available_extra_rooms_in_hospital))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(department))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(ward_type))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(bed_grade))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(severity_of_illness))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(visitors_with_patient))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(age))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(severity_of_illness))
+
+ggplot(patients_data) +
+  geom_bar(mapping = aes(type_of_admission))
+```
 
 
 ##Essential Findings (Important or Interesting)
