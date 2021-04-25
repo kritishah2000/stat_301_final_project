@@ -92,6 +92,7 @@ ggplot(patients_data) +
 
   ##Interesting/important relationships between response variable(s) and predictor variables.
 
+
 # mosaic(stay ~ age + bed_grade, data = patients_data)
 # 
 # png(file = "data/mosaic.png", width = 9, height = 9, units = "in", res = 140)
