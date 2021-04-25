@@ -6,3 +6,16 @@ output: html_notebook
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 
+##Initial overview of data
+
+
+
+
+##Essential Findings (Important or Interesting)
+
+
+
+##Secondary Findings
+
+
+
