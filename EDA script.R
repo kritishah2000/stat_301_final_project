@@ -53,7 +53,7 @@ ggplot(patients_data) +
 
   ##Interesting/important relationships between response variable(s) and predictor variables.
 
-mosaic(Stay ~ Age + `BedGrade`, data = patients_data)
+mosaic(stay ~ age + bed_grade, data = patients_data)
 
 #Hospital_type_Code, Hospital_region_code, `Available Extra Rooms in Hospital`, Department, Ward_Type**
 #
