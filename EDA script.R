@@ -43,6 +43,8 @@ In total, there are 318438 rows of data. Upon reading in the data, we can see th
 
 Lastly, for our models, we also decided to exclude `case_id` and `patientid` because these were unique identifiers for each patient that would not show important relationships in the data.
 
+
+
 #Essential Findings (Important or Interesting)
   ##Thorough univariate investigation of response variable(s)
 
@@ -53,13 +55,13 @@ ggplot(patients_data) +
   ##Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
 
 ggplot(patients_data) +
-  geom_histogram(mapping = aes(Hospital_code))
+  geom_histogram(mapping = aes(hospital_code))
 
 ggplot(patients_data) +
-  geom_bar(mapping = aes(Hospital_type_code))
+  geom_bar(mapping = aes(hospital_type_code))
 
 ggplot(patients_data) +
-  geom_bar(mapping = aes(Hospital_region_code))
+  geom_bar(mapping = aes(hospital_region_code))
 
 ggplot(patients_data) +
   geom_bar(mapping = aes(available_extra_rooms_in_hospital))
@@ -97,31 +99,74 @@ ggplot(patients_data) +
 # )
 # dev.off()
 
+ggplot(patients_data, aes(x = bed_grade, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Bed Grade",
+    y = "Proportion"
+  )
+
 # IMPORTANT: As age increases, length of stay increases
 ggplot(patients_data, aes(x = age, fill = stay)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Age",
+    y = "Proportion"
+  )
 
 # Important: There is a difference in length of stay across departments; surgery has the longest
 ggplot(patients_data, aes(x = department, fill = stay)) +
   geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Visitors with Patient",
+    y = "Proportion"
+  ) +
   coord_flip()
 
 # Trauma patients have the longest stay
 ggplot(patients_data, aes(x = type_of_admission, fill = stay)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Type of Admission",
+    y = "Proportion"
+  )
 
 # Extreme illness has longest stay
 ggplot(patients_data, aes(x = severity_of_illness, fill = stay)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Severity of Illness",
+    y = "Proportion"
+  )
 
 # Important: The longer you stay, the more visitors you have
 ggplot(patients_data, mapping = aes(x = stay, y = visitors_with_patient)) +
-  geom_boxplot()
+  geom_boxplot() +
+  theme_minimal() +
+  labs(
+    x = "Length of Stay",
+    y = "Visitors with Patient"
+  )
 
 #    ##Interesting/important relationships among predictor variables.
 
 ggplot(patients_data, mapping = aes(visitors_with_patient, available_extra_rooms_in_hospital)) +
-  geom_point() 
+  geom_point() +
+  labs(
+    x = "Visitors with Patient",
+    y = "Available Extra Rooms in Hospital"
+  ) +
+  theme_minimal()
 
 
 
@@ -137,9 +182,21 @@ ggplot(patients_data, mapping = aes(visitors_with_patient, available_extra_rooms
 
 # Important: There is no significant difference in length of stay between regions
 ggplot(patients_data, aes(x = hospital_region_code, fill = stay)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  labs(
+    x = "Hospital Region Code",
+    y = "Proportion",
+    fill = "Length of Stay"
+  ) +
+  theme_minimal()
 
 
 # Important: There is a difference in length of stay across ward type
 ggplot(patients_data, aes(x = ward_type, fill = stay)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  labs(
+    x = "Ward Type",
+    y = "Proportion",
+    fill = "Length of Stay"
+  ) +
+  theme_minimal()
