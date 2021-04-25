@@ -17,5 +17,33 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 
 ##Secondary Findings
 
+We viewed two variables in the data as either being unimportant or showing some potential: hospital_region_code and ward_type. Based on the first graph seen below, it is important to note that there is no significant difference in length of stay between regions. We didn't find this surprising since we didn't know what each hospital region represented (it is not mentioned in the codebook). 
+
+```{r}
+ggplot(patients_data, aes(x = hospital_region_code, fill = stay)) +
+  geom_bar(position = "fill") +
+  labs(
+    x = "Hospital Region Code",
+    y = "Proportion",
+    fill = "Length of Stay"
+  ) +
+  theme_minimal()
+```
+
+
+We thought ward type showed some potential since there was clear indication that different wards had different lengths of stay. But, once again, because the codebook did not explain what each ward type was, we thought this finding was not as important as the other variables we looked at. 
+
+```{r}
+ggplot(patients_data, aes(x = ward_type, fill = stay)) +
+  geom_bar(position = "fill") +
+  labs(
+    x = "Ward Type",
+    y = "Proportion",
+    fill = "Length of Stay"
+  ) +
+  theme_minimal()
+```
+
+
 
 

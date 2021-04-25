@@ -219,9 +219,39 @@ pre code {
 <p>##Initial overview of data</p>
 <p>##Essential Findings (Important or Interesting)</p>
 <p>##Secondary Findings</p>
+<p>We viewed two variables in the data as either being unimportant or showing some potential: hospital_region_code and ward_type. Based on the first graph seen below, it is important to note that there is no significant difference in length of stay between regions. We didn’t find this surprising since we didn’t know what each hospital region represented (it is not mentioned in the codebook).</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KHBhdGllbnRzX2RhdGEsIGFlcyh4ID0gaG9zcGl0YWxfcmVnaW9uX2NvZGUsIGZpbGwgPSBzdGF5KSkgK1xuICBnZW9tX2Jhcihwb3NpdGlvbiA9IFwiZmlsbFwiKSArXG4gIGxhYnMoXG4gICAgeCA9IFwiSG9zcGl0YWwgUmVnaW9uIENvZGVcIixcbiAgICB5ID0gXCJQcm9wb3J0aW9uXCIsXG4gICAgZmlsbCA9IFwiTGVuZ3RoIG9mIFN0YXlcIlxuICApICtcbiAgdGhlbWVfbWluaW1hbCgpXG5gYGAifQ== -->
+<pre class="r"><code>ggplot(patients_data, aes(x = hospital_region_code, fill = stay)) +
+  geom_bar(position = &quot;fill&quot;) +
+  labs(
+    x = &quot;Hospital Region Code&quot;,
+    y = &quot;Proportion&quot;,
+    fill = &quot;Length of Stay&quot;
+  ) +
+  theme_minimal()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We thought ward type showed some potential since there was clear indication that different wards had different lengths of stay. But, once again, because the codebook did not explain what each ward type was, we thought this finding was not as important as the other variables we looked at.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KHBhdGllbnRzX2RhdGEsIGFlcyh4ID0gd2FyZF90eXBlLCBmaWxsID0gc3RheSkpICtcbiAgZ2VvbV9iYXIocG9zaXRpb24gPSBcImZpbGxcIikgK1xuICBsYWJzKFxuICAgIHggPSBcIldhcmQgVHlwZVwiLFxuICAgIHkgPSBcIlByb3BvcnRpb25cIixcbiAgICBmaWxsID0gXCJMZW5ndGggb2YgU3RheVwiXG4gICkgK1xuICB0aGVtZV9taW5pbWFsKClcbmBgYCJ9 -->
+<pre class="r"><code>ggplot(patients_data, aes(x = ward_type, fill = stay)) +
+  geom_bar(position = &quot;fill&quot;) +
+  labs(
+    x = &quot;Ward Type&quot;,
+    y = &quot;Proportion&quot;,
+    fill = &quot;Length of Stay&quot;
+  ) +
+  theme_minimal()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgoKIyNJbml0aWFsIG92ZXJ2aWV3IG9mIGRhdGEKCgoKCiMjRXNzZW50aWFsIEZpbmRpbmdzIChJbXBvcnRhbnQgb3IgSW50ZXJlc3RpbmcpCgoKCiMjU2Vjb25kYXJ5IEZpbmRpbmdzCgoKCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KDQojI0luaXRpYWwgb3ZlcnZpZXcgb2YgZGF0YQ0KDQoNCg0KDQojI0Vzc2VudGlhbCBGaW5kaW5ncyAoSW1wb3J0YW50IG9yIEludGVyZXN0aW5nKQ0KDQoNCg0KIyNTZWNvbmRhcnkgRmluZGluZ3MNCg0KV2Ugdmlld2VkIHR3byB2YXJpYWJsZXMgaW4gdGhlIGRhdGEgYXMgZWl0aGVyIGJlaW5nIHVuaW1wb3J0YW50IG9yIHNob3dpbmcgc29tZSBwb3RlbnRpYWw6IGhvc3BpdGFsX3JlZ2lvbl9jb2RlIGFuZCB3YXJkX3R5cGUuIEJhc2VkIG9uIHRoZSBmaXJzdCBncmFwaCBzZWVuIGJlbG93LCBpdCBpcyBpbXBvcnRhbnQgdG8gbm90ZSB0aGF0IHRoZXJlIGlzIG5vIHNpZ25pZmljYW50IGRpZmZlcmVuY2UgaW4gbGVuZ3RoIG9mIHN0YXkgYmV0d2VlbiByZWdpb25zLiBXZSBkaWRuJ3QgZmluZCB0aGlzIHN1cnByaXNpbmcgc2luY2Ugd2UgZGlkbid0IGtub3cgd2hhdCBlYWNoIGhvc3BpdGFsIHJlZ2lvbiByZXByZXNlbnRlZCAoaXQgaXMgbm90IG1lbnRpb25lZCBpbiB0aGUgY29kZWJvb2spLiANCg0KYGBge3J9DQpnZ3Bsb3QocGF0aWVudHNfZGF0YSwgYWVzKHggPSBob3NwaXRhbF9yZWdpb25fY29kZSwgZmlsbCA9IHN0YXkpKSArDQogIGdlb21fYmFyKHBvc2l0aW9uID0gImZpbGwiKSArDQogIGxhYnMoDQogICAgeCA9ICJIb3NwaXRhbCBSZWdpb24gQ29kZSIsDQogICAgeSA9ICJQcm9wb3J0aW9uIiwNCiAgICBmaWxsID0gIkxlbmd0aCBvZiBTdGF5Ig0KICApICsNCiAgdGhlbWVfbWluaW1hbCgpDQpgYGANCg0KDQpXZSB0aG91Z2h0IHdhcmQgdHlwZSBzaG93ZWQgc29tZSBwb3RlbnRpYWwgc2luY2UgdGhlcmUgd2FzIGNsZWFyIGluZGljYXRpb24gdGhhdCBkaWZmZXJlbnQgd2FyZHMgaGFkIGRpZmZlcmVudCBsZW5ndGhzIG9mIHN0YXkuIEJ1dCwgb25jZSBhZ2FpbiwgYmVjYXVzZSB0aGUgY29kZWJvb2sgZGlkIG5vdCBleHBsYWluIHdoYXQgZWFjaCB3YXJkIHR5cGUgd2FzLCB3ZSB0aG91Z2h0IHRoaXMgZmluZGluZyB3YXMgbm90IGFzIGltcG9ydGFudCBhcyB0aGUgb3RoZXIgdmFyaWFibGVzIHdlIGxvb2tlZCBhdC4gDQoNCmBgYHtyfQ0KZ2dwbG90KHBhdGllbnRzX2RhdGEsIGFlcyh4ID0gd2FyZF90eXBlLCBmaWxsID0gc3RheSkpICsNCiAgZ2VvbV9iYXIocG9zaXRpb24gPSAiZmlsbCIpICsNCiAgbGFicygNCiAgICB4ID0gIldhcmQgVHlwZSIsDQogICAgeSA9ICJQcm9wb3J0aW9uIiwNCiAgICBmaWxsID0gIkxlbmd0aCBvZiBTdGF5Ig0KICApICsNCiAgdGhlbWVfbWluaW1hbCgpDQpgYGANCg0KDQoNCg0K</div>
 
 
 
