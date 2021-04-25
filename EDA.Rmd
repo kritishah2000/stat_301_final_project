@@ -6,12 +6,131 @@ output: html_notebook
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 
+## Loading essential packages and data
+```{r}
+
+library(tidyverse)
+library(skimr)
+library(tidymodels)
+library(janitor)
+library(vcd)
+library(corrplot)
+library(corrr)
+
+patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
+  clean_names()
+```
+
+
 ##Initial overview of data
 
 
 
 
 ##Essential Findings (Important or Interesting)
+
+#Investigation of Response Variable
+
+
+
+
+#Investigation of Important Predictor Variables
+
+
+#Interesting Relationships Between Predictor and Response Variables
+
+Although, we do not know what the bed grades represent, there does seem to be a relationship. Higher bed grades are related to longer lengths of stay.
+```{r}
+ggplot(patients_data, aes(x = bed_grade, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Bed Grade",
+    y = "Proportion"
+  )
+```
+
+There is a direct relationship between age and length of stay. As age increases, so does the length of stay.
+```{r}
+ggplot(patients_data, aes(x = age, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Age",
+    y = "Proportion"
+  )
+```
+
+
+Among the different departmetns, surgery had the longest length of stay.
+```{r}
+ggplot(patients_data, aes(x = department, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Visitors with Patient",
+    y = "Proportion"
+  ) +
+  coord_flip()
+```
+
+Compared to other admission types, trauma patients have the longest length of stay.
+```{r}
+ggplot(patients_data, aes(x = type_of_admission, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Type of Admission",
+    y = "Proportion"
+  )
+```
+
+
+
+Patients how had severity of illness that were extreme had the longest length of stay. 
+```{r}
+# Extreme illness has longest stay
+ggplot(patients_data, aes(x = severity_of_illness, fill = stay)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    fill = "Length of Stay",
+    x = "Severity of Illness",
+    y = "Proportion"
+  )
+```
+
+There is also a direct relationship between length of stay and the number of vistors. As the length of stay increases, so does the number of visitors.
+```{r}
+ggplot(patients_data, mapping = aes(x = stay, y = visitors_with_patient)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(
+    x = "Length of Stay",
+    y = "Visitors with Patient"
+  )
+```
+
+
+
+
+#Interesting relationships Among Predictor Variabels
+
+
+As the number of vistors per patient increases, the available extra rooms in the hospital decreases.
+```{r}
+ggplot(patients_data, mapping = aes(visitors_with_patient, available_extra_rooms_in_hospital)) +
+  geom_point() +
+  labs(
+    x = "Visitors with Patient",
+    y = "Available Extra Rooms in Hospital"
+  ) +
+  theme_minimal()
+```
 
 
 
