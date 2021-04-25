@@ -26,6 +26,12 @@ skim_without_charts(patients_data)
   ##Thorough univariate investigation of response variable(s)
 
 ggplot(patients_data) +
+  geom_bar(mapping = aes(stay))
+
+  
+  ##Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
+
+ggplot(patients_data) +
   geom_histogram(mapping = aes(Hospital_code))
 
 ggplot(patients_data) +
@@ -59,13 +65,7 @@ ggplot(patients_data) +
   geom_bar(mapping = aes(severity_of_illness))
 
 ggplot(patients_data) +
-  geom_bar(mapping = aes(stay))
-
-ggplot(patients_data) +
   geom_bar(mapping = aes(type_of_admission))
-  
-  ##Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
-
 
   ##Interesting/important relationships between response variable(s) and predictor variables.
 
