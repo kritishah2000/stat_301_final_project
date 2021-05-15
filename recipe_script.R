@@ -46,4 +46,4 @@ prep(patients_recipe) %>%
 # svm polynomial - Angie
 # svm radial - Angie
 
-# using metric accuracy as our judge
+# using metric accuracy and roc_auc as our judge
