@@ -1,29 +1,15 @@
 ---
 title: "R Notebook"
-output: html_notebook
+author: "Kriti Shah, Enat Ayele, Kranti Rumalla, Angie Jang"
+date: "4/25/2021"
+output: 
+  html_document:
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-```{r}
-#loading packages
-library(tidyverse)
-library(skimr)
-library(tidymodels)
-library(janitor)
-library(vcd)
-library(corrplot)
-library(corrr)
-
-#loading data
-patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
-  clean_names()
-```
-
-
-## Loading essential packages and data
-```{r}
-
+```{r, message = FALSE}
 library(tidyverse)
 library(skimr)
 library(tidymodels)
@@ -37,25 +23,39 @@ patients_data <- read_csv("data/unprocessed/train_data.csv") %>%
 ```
 
 
-##Initial overview of data
+## Initial overview of data
+
 Our data was taken from a Kaggle dataset called [AV: Healthcare Analytics II](https://www.kaggle.com/nehaprabhavalkar/av-healthcare-analytics-ii) published by Neha Prabhavlakar in 2020. The data was compiled by Analytics Vidhya for a Kaggle competition exploring the theme of healthcare analytics and the application of machine learning on healthcare case studies. 
 
 In general, the dataset contains information on various factors that may influence the length of stay for a patient during the COVID-19 pandemic. Ultimately, using these variables, we were intending to train models to predict the length of stay by relating to the response variable (`stay` -- number of stay days by the patient) with the following 13 predictor variables:
-* `hospital_code`: unique code for hospital
-* `hospital_type_code`: unique code for type of hospital
-* `hospital_region_code`: region code of hospital
-* `available_extra_rooms_in_hospital`: number of extra rooms available in the hospital
-* `department`: department overlooking the case
-* `ward_type`: code for the ward type
-* `ward_facility_code`: code for the ward facility
-* `bed_grade`: condition of bed in the ward
-* `visitors_with_patient`: number of visitors with patient
-* `age`: age of the patient
-* `severity_of_illness`: severity of illness recorded at the time of admission
-* `type_of_admission`: admission type registered by the hospital
-* `admission_deposit`: deposit at the admission time
 
-```{r}
+ `hospital_code`: unique code for hospital
+
+ `hospital_type_code`: unique code for type of hospital
+
+ `hospital_region_code`: region code of hospital
+
+ `available_extra_rooms_in_hospital`: number of extra rooms available in the hospital
+
+ `department`: department overlooking the case
+
+ `ward_type`: code for the ward type
+
+ `ward_facility_code`: code for the ward facility
+
+ `bed_grade`: condition of bed in the ward
+
+ `visitors_with_patient`: number of visitors with patient
+
+ `age`: age of the patient
+
+ `severity_of_illness`: severity of illness recorded at the time of admission
+
+ `type_of_admission`: admission type registered by the hospital
+
+ `admission_deposit`: deposit at the admission time
+
+```{r, message = FALSE}
 skim_without_charts(patients_data)
 ```
 
@@ -63,16 +63,22 @@ In total, there are 318438 rows of data. Upon skimming the data, we can see that
 
 Lastly, for our models, we also decided to exclude `case_id` and `patientid` because these were unique identifiers for each patient that would not show important relationships in the data.
 
-###Thorough univariate investigation of response variable(s)
+## Essential Findings (Important or Interesting)
 
-```{r}
+### Investigation of Response Variable
+
+Our response variable is skewed right.
+
+```{r, message = FALSE}
 ggplot(patients_data) +
   geom_bar(mapping = aes(stay))
 ```
 
-###Thorough univariate investigation of important predictor variable(s) - ones either believed to be important (domain knowledge) or hypothesized to be important. 
 
-```{r}
+### Investigation of Important Predictor Variables
+
+
+```{r, message = FALSE, warning = FALSE}
 ggplot(patients_data) +
   geom_histogram(mapping = aes(hospital_code))
 
@@ -111,20 +117,10 @@ ggplot(patients_data) +
 ```
 
 
-##Essential Findings (Important or Interesting)
-
-#Investigation of Response Variable
-
-
-
-
-#Investigation of Important Predictor Variables
-
-
-#Interesting Relationships Between Predictor and Response Variables
+### Interesting Relationships Between Predictor and Response Variables
 
 Although, we do not know what the bed grades represent, there does seem to be a relationship. Higher bed grades are related to longer lengths of stay.
-```{r}
+```{r, message = FALSE, warning = FALSE}
 ggplot(patients_data, aes(x = bed_grade, fill = stay)) +
   geom_bar(position = "fill") +
   theme_minimal() +
@@ -136,7 +132,7 @@ ggplot(patients_data, aes(x = bed_grade, fill = stay)) +
 ```
 
 There is a direct relationship between age and length of stay. As age increases, so does the length of stay.
-```{r}
+```{r, message = FALSE, warning = FALSE}
 ggplot(patients_data, aes(x = age, fill = stay)) +
   geom_bar(position = "fill") +
   theme_minimal() +
@@ -148,8 +144,8 @@ ggplot(patients_data, aes(x = age, fill = stay)) +
 ```
 
 
-Among the different departmetns, surgery had the longest length of stay.
-```{r}
+Among the different departments, surgery had the longest length of stay.
+```{r, message = FALSE}
 ggplot(patients_data, aes(x = department, fill = stay)) +
   geom_bar(position = "fill") +
   theme_minimal() +
@@ -162,7 +158,7 @@ ggplot(patients_data, aes(x = department, fill = stay)) +
 ```
 
 Compared to other admission types, trauma patients have the longest length of stay.
-```{r}
+```{r, message = FALSE}
 ggplot(patients_data, aes(x = type_of_admission, fill = stay)) +
   geom_bar(position = "fill") +
   theme_minimal() +
@@ -173,10 +169,8 @@ ggplot(patients_data, aes(x = type_of_admission, fill = stay)) +
   )
 ```
 
-
-
 Patients how had severity of illness that were extreme had the longest length of stay. 
-```{r}
+```{r, message = FALSE}
 # Extreme illness has longest stay
 ggplot(patients_data, aes(x = severity_of_illness, fill = stay)) +
   geom_bar(position = "fill") +
@@ -189,7 +183,7 @@ ggplot(patients_data, aes(x = severity_of_illness, fill = stay)) +
 ```
 
 There is also a direct relationship between length of stay and the number of vistors. As the length of stay increases, so does the number of visitors.
-```{r}
+```{r, message = FALSE}
 ggplot(patients_data, mapping = aes(x = stay, y = visitors_with_patient)) +
   geom_boxplot() +
   theme_minimal() +
@@ -199,14 +193,11 @@ ggplot(patients_data, mapping = aes(x = stay, y = visitors_with_patient)) +
   )
 ```
 
+### Interesting relationships Among Predictor Variables
 
+As the number of visitors per patient increases, the available extra rooms in the hospital decreases.
 
-
-#Interesting relationships Among Predictor Variabels
-
-
-As the number of vistors per patient increases, the available extra rooms in the hospital decreases.
-```{r}
+```{r, message = FALSE}
 ggplot(patients_data, mapping = aes(visitors_with_patient, available_extra_rooms_in_hospital)) +
   geom_point() +
   labs(
@@ -216,13 +207,13 @@ ggplot(patients_data, mapping = aes(visitors_with_patient, available_extra_rooms
   theme_minimal()
 ```
 
+Our findings are important because they allow us to focus on predictors that have an impact on the response variable with which we can build models. From our exploration, we are able to see that our response variable is skewed to the right which means that it would have to be stratified in our split. Some of the predictors also look unevenly distributed and we will have to normalize/log transform prior to creating our model. We also determined that the interaction terms for this dataset could be visitors per patient and available extra rooms in hospital. This will be important for when we create the recipe for our models.
 
-
-##Secondary Findings
+## Secondary Findings
 
 We viewed two variables in the data as either being unimportant or showing some potential: hospital_region_code and ward_type. Based on the first graph seen below, it is important to note that there is no significant difference in length of stay between regions. We didn't find this surprising since we didn't know what each hospital region represented (it is not mentioned in the codebook). 
 
-```{r}
+```{r, message = FALSE}
 ggplot(patients_data, aes(x = hospital_region_code, fill = stay)) +
   geom_bar(position = "fill") +
   labs(
@@ -236,7 +227,7 @@ ggplot(patients_data, aes(x = hospital_region_code, fill = stay)) +
 
 We thought ward type showed some potential since there was clear indication that different wards had different lengths of stay. But, once again, because the codebook did not explain what each ward type was, we thought this finding was not as important as the other variables we looked at. 
 
-```{r}
+```{r, message = FALSE}
 ggplot(patients_data, aes(x = ward_type, fill = stay)) +
   geom_bar(position = "fill") +
   labs(
@@ -246,7 +237,3 @@ ggplot(patients_data, aes(x = ward_type, fill = stay)) +
   ) +
   theme_minimal()
 ```
-
-
-
-
