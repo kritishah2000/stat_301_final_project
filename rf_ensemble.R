@@ -3,12 +3,12 @@ library(tidyverse)
 library(skimr)
 library(tidymodels)
 library(janitor)
-library(stacks)
-library(conflicted)
-library(textrecipes)
+#library(stacks)
+#library(conflicted)
+#library(textrecipes)
 
 # Handle common conflicts
-tidymodels_prefer()
+#tidymodels_prefer()
 
 
 set.seed(3013)
@@ -17,6 +17,13 @@ load("data/setup.rda")
 
 prep(patients_recipe) %>% 
   bake(new_data = NULL)
+
+
+#Start Parallel
+library(doParallel)
+cl <- makePSOCKcluster(4)
+registerDoParallel(cl)
+
 
 # Define model ----
 
@@ -77,3 +84,5 @@ roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11
 
 roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
   autoplot()
+
+stopCluster(cl)
