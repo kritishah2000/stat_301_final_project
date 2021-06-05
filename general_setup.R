@@ -64,7 +64,7 @@ skim_without_charts(patients_testing)
 patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
 
 patients_recipe <- recipe(stay ~  
-                            department + ward_type +  ward_facility_code + severity_of_illness + 
+                            department + ward_facility_code + severity_of_illness + 
                             visitors_with_patient + age + admission_deposit,
                           data = patients_train) %>%
   # step_clean_levels(stay) %>% 
