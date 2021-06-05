@@ -143,7 +143,7 @@ save(slnn_tune, file = "data/slnn_ensemble.rda")
 
 load("data/slnn_ensemble.rda")
 
-load("data/slnn_tune.rda")
+#load("data/slnn_tune.rda")
 # 
 autoplot(slnn_tune, metric = "roc_auc")
 select_best(slnn_tune, metric = "roc_auc")
