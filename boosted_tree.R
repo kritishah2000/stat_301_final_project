@@ -104,10 +104,25 @@ boosted_tune <- boosted_workflow %>%
     grid = boosted_grid
   )
 
+stopCluster(cl)
 
 save(boosted_tune, boosted_workflow, file = "data/boosted_tune.rda")
 
+autoplot(boosted_tune, metric = "roc_auc")
+select_best(boosted_tune, metric = "roc_auc")
+show_best(boosted_tune, metric = "roc_auc")
 
-show_best(boosted_tune, metric = "accuracy")
+boosted_workflow_tuned <- boosted_workflow %>% 
+  finalize_workflow(select_best(boosted_tune, metric = "roc_auc"))
+                    
+boosted_results <- fit(boosted_workflow_tuned, patients_train)
 
-stopCluster(cl)
+patients_predict <- predict(slnn_results, patients_testing, type = "prob") %>%
+  bind_cols(patients_testing %>% select(stay))
+
+roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`)
+
+roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
+  autoplot()
+
+
