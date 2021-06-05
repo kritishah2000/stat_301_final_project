@@ -35,7 +35,6 @@ patients_train <- patients_train %>%
     hospital_region_code = as.factor(hospital_region_code),
     available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
     department = as.factor(department),
-    ward_type = as.factor(ward_type),
     bed_grade = as.factor(bed_grade),
     severity_of_illness = as.factor(severity_of_illness),
     visitors_with_patient = as.integer(visitors_with_patient),
@@ -51,7 +50,6 @@ patients_testing <- patients_testing %>%
     hospital_region_code = as.factor(hospital_region_code),
     available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
     department = as.factor(department),
-    ward_type = as.factor(ward_type),
     bed_grade = as.factor(bed_grade),
     severity_of_illness = as.factor(severity_of_illness),
     visitors_with_patient = as.integer(visitors_with_patient),
@@ -64,7 +62,7 @@ skim_without_charts(patients_testing)
 patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
 
 patients_recipe <- recipe(stay ~  
-                            department + ward_type +  ward_facility_code + severity_of_illness + 
+                            department +  ward_facility_code + severity_of_illness + 
                             visitors_with_patient + age + admission_deposit,
                           data = patients_train) %>%
   # step_clean_levels(stay) %>% 
