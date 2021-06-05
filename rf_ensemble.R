@@ -3,12 +3,12 @@ library(tidyverse)
 library(skimr)
 library(tidymodels)
 library(janitor)
-library(stacks)
-library(conflicted)
-library(textrecipes)
+#library(stacks)
+#library(conflicted)
+#library(textrecipes)
 
 # Handle common conflicts
-tidymodels_prefer()
+#tidymodels_prefer()
 
 
 set.seed(3013)
@@ -17,6 +17,13 @@ load("data/setup.rda")
 
 prep(patients_recipe) %>% 
   bake(new_data = NULL)
+
+
+#Start Parallel
+library(doParallel)
+cl <- makePSOCKcluster(8)
+registerDoParallel(cl)
+
 
 # Define model ----
 
@@ -55,3 +62,5 @@ rf_tune5 <- rf_tune4
 
 # save(rf_tune4, rf_workflow4, file = "data/rf_tune4.rda")
 save(rf_tune5, file = "data/rf_tune5.rda")
+
+stopCluster(cl)

@@ -11,50 +11,10 @@ registerDoParallel(cl)
 
 set.seed(3013)
 
-# load required objects ----
-patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
-  clean_names()
-
-patients_data <- patients_data %>% 
-  filter(stay == "0-10" | stay == "11-20" | stay == "21-30" | stay == "31-40")
-
-patients_split <- initial_split(data = patients_data, prop = 0.7, strata = stay)
-patients_train <- training(patients_split)
-patients_testing <- testing(patients_split)
 
 
-#cleaning up the data
-patients_train <- patients_train %>% 
-  mutate(
-    stay = as.factor(stay),
-    hospital_code = as.integer(hospital_code),
-    hospital_type_code = as.factor(hospital_type_code),
-    hospital_region_code = as.factor(hospital_region_code),
-    available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
-    department = as.factor(department),
-    ward_type = as.factor(ward_type),
-    bed_grade = as.integer(bed_grade),
-    severity_of_illness = as.factor(severity_of_illness),
-    visitors_with_patient = as.integer(visitors_with_patient),
-    age = as.factor(age),
-    type_of_admission = as.factor(type_of_admission)
-  )
 
-patients_testing <- patients_testing %>% 
-  mutate(
-    hospital_code = as.integer(hospital_code),
-    hospital_type_code = as.factor(hospital_type_code),
-    hospital_region_code = as.factor(hospital_region_code),
-    available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
-    department = as.factor(department),
-    ward_type = as.factor(ward_type),
-    bed_grade = as.integer(bed_grade),
-    severity_of_illness = as.factor(severity_of_illness),
-    visitors_with_patient = as.integer(visitors_with_patient),
-    age = as.factor(age),
-    type_of_admission = as.factor(type_of_admission)
-  )
-
+load("data/setup.rda")
 
 #creating folds
 
@@ -104,10 +64,25 @@ boosted_tune <- boosted_workflow %>%
     grid = boosted_grid
   )
 
+stopCluster(cl)
 
 save(boosted_tune, boosted_workflow, file = "data/boosted_tune.rda")
 
+autoplot(boosted_tune, metric = "roc_auc")
+select_best(boosted_tune, metric = "roc_auc")
+show_best(boosted_tune, metric = "roc_auc")
 
-show_best(boosted_tune, metric = "accuracy")
+boosted_workflow_tuned <- boosted_workflow %>% 
+  finalize_workflow(select_best(boosted_tune, metric = "roc_auc"))
+                    
+boosted_results <- fit(boosted_workflow_tuned, patients_train)
 
-stopCluster(cl)
+patients_predict <- predict(boosted_results, patients_testing, type = "prob") %>%
+  bind_cols(patients_testing %>% select(stay))
+
+roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`)
+
+roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
+  autoplot()
+
+
