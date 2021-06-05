@@ -13,7 +13,7 @@ set.seed(3013)
 patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
   clean_names() 
 
-#patietns_data <- patients_data %>% 
+#patients_data <- patients_data %>% 
 #  mutate(stay = if_else(stay == "0-10" | stay == "11-20" | stay == "21-30" | stay == "31-40" |stay == "41-50", "0-50", "> 50")) %>% 
 #  select(stay)
 
