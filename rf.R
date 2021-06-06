@@ -113,25 +113,47 @@ rf_tune3 <- rf_workflow3 %>%
 
 save(rf_tune3, rf_workflow3, file = "data/rf_tune3.rda")
 
+load("data/rf_tune3.rda")
 
 
 # #results
 # autoplot(rf_tune2, metric = "accuracy")
 # select_best(rf_tune2, metric = "accuracy")
 show_best(rf_tune3, metric = "accuracy")
+
+autoplot(rf_tune3, metric = "roc_auc")
+
 #accuracy = 0.454
 
-# 
-# rf_workflow_tuned <- rf_workflow %>%
-#   finalize_workflow(select_best(rf_tune, metric = "accuracy"))
-# 
-# 
-# rf_results <- fit(rf_workflow_tuned, training_data)
-# 
-# data_metric_rf <- metric_set(accuracy)
-# 
-# data_predict_rf <- predict(rf_results, new_data = testing_data) %>%
-#   bind_cols(testing_data %>% select(id))
+
+rf_workflow_tuned <- rf_workflow3 %>%
+  finalize_workflow(select_best(rf_tune3, metric = "roc_auc"))
+
+
+rf_results <- fit(rf_workflow_tuned, patients_train)
+
+data_metric_rf <- metric_set(roc_auc)
+
+data_predict_rf <- predict(rf_results, new_data = patients_testing, type = "prob") %>%
+  bind_cols(patients_testing %>% select(stay))
+
+roc_auc(data_predict_rf, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) 
+
+
+roc_curve(data_predict_rf, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
+  autoplot()
+
+
+
+
+
+
+
+
+data_predict_rf %>% 
+  wild_metric_rf(truth = wlf, estimate = .pred_class)
+
+conf_mat(wild_predict_rf, truth = wlf, estimate = .pred_class)
 
 
 

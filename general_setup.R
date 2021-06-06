@@ -63,11 +63,8 @@ patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
 
 # + ward_type
 patients_recipe <- recipe(stay ~  
-<<<<<<< HEAD
-                            department + ward_facility_code + severity_of_illness + 
-=======
                             department +  ward_facility_code + severity_of_illness + 
->>>>>>> bff45ccd92d797b65e338f8ccd84890167376468
+
                             visitors_with_patient + age + admission_deposit,
                           data = patients_train) %>%
   # step_clean_levels(stay) %>% 
