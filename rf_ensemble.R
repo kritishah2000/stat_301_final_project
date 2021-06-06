@@ -66,8 +66,8 @@ save(rf_tune5, file = "data/rf_tune5.rda")
 load("data/rf_tune5.rda")
 # 
 autoplot(rf_tune5, metric = "roc_auc")
-select_best(slnn_tune, metric = "roc_auc")
-show_best(slnn_tune, metric = "roc_auc")
+select_best(rf_tune5, metric = "roc_auc")
+show_best(rf_tune5, metric = "roc_auc")
 
 # 
 rf_workflow_tuned <- rf_workflow4 %>%

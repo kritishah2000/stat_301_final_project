@@ -21,7 +21,7 @@ patients_data <- patients_data %>%
 # ggplot(aes(stay)) +
 # geom_bar()
 
-patients_split <- initial_split(data = patients_data, prop = 0.05, strata = stay)
+patients_split <- initial_split(data = patients_data, prop = 0.01, strata = stay)
 patients_train <- training(patients_split)
 patients_testing <- testing(patients_split)
 
@@ -61,18 +61,17 @@ skim_without_charts(patients_testing)
 
 patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
 
-# + ward_type
-patients_recipe <- recipe(stay ~  
-                            department +  ward_facility_code + severity_of_illness + 
+patients_recipe <- recipe(stay ~
+                            department +  ward_facility_code + severity_of_illness +
                             visitors_with_patient + age + admission_deposit,
                           data = patients_train) %>%
-  # step_clean_levels(stay) %>% 
+  # step_clean_levels(stay) %>%
   step_other(all_nominal(), -all_outcomes()) %>%
   # step_dummy(all_nominal(), -all_outcomes(), -severity_of_illness, one_hot = TRUE) %>%
-  # step_dummy(severity_of_illness) %>% 
+  # step_dummy(severity_of_illness) %>%
   step_dummy(all_nominal(), -all_outcomes()) %>%
   step_interact(~ starts_with("severity_of_illness"):visitors_with_patient) %>%
-  step_scale(all_numeric()) %>% 
+  step_scale(all_numeric()) %>%
   step_normalize(all_numeric())
 
 save(patients_train, patients_testing, patients_folds, patients_recipe, file = "data/setup.rda")
