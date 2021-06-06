@@ -3,6 +3,7 @@ library(tidyverse)
 library(skimr)
 library(tidymodels)
 library(janitor)
+library(vip)
 #library(stacks)
 #library(conflicted)
 #library(textrecipes)
@@ -74,6 +75,10 @@ rf_workflow_tuned <- rf_workflow4 %>%
   finalize_workflow(select_best(rf_tune5, metric = "roc_auc"))
 
 rf_results <- fit(rf_workflow_tuned, patients_train)
+
+
+
+
 # 
 # # loan_metric <- metric_set(accuracy)
 # 
