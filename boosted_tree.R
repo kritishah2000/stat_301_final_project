@@ -18,18 +18,18 @@ load("data/setup.rda")
 
 #creating folds
 
-dim(patients_train)
+#dim(patients_train)
 
-patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
+#patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
 
 
-patients_recipe <- recipe(stay ~ department + ward_type + ward_facility_code + severity_of_illness + age + visitors_with_patient + admission_deposit,
-                          data = patients_train) %>% 
-  step_other(all_nominal(), -all_outcomes(), threshold = 0.1) %>%  #increase threshold values
-  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
-  step_interact(~starts_with("severity_of_illness"):visitors_with_patient) %>% 
-  step_scale(all_numeric()) %>% 
-  step_normalize(all_numeric())
+#patients_recipe <- recipe(stay ~ department + ward_type + ward_facility_code + severity_of_illness + age + visitors_with_patient + admission_deposit,
+#                          data = patients_train) %>% 
+#  step_other(all_nominal(), -all_outcomes(), threshold = 0.1) %>%  #increase threshold values
+#  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+#  step_interact(~starts_with("severity_of_illness"):visitors_with_patient) %>% 
+#  step_scale(all_numeric()) %>% 
+#  step_normalize(all_numeric())
 
 prep(patients_recipe) %>% 
   bake(new_data = NULL)

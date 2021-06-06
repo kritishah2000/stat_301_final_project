@@ -21,7 +21,7 @@ patients_data <- patients_data %>%
 # ggplot(aes(stay)) +
 # geom_bar()
 
-patients_split <- initial_split(data = patients_data, prop = 0.05, strata = stay)
+patients_split <- initial_split(data = patients_data, prop = 0.01, strata = stay)
 patients_train <- training(patients_split)
 patients_testing <- testing(patients_split)
 
