@@ -143,26 +143,18 @@ save(slnn_tune, file = "data/slnn_ensemble.rda")
 
 load("data/slnn_ensemble.rda")
 
-load("data/slnn_tune.rda")
-# 
-autoplot(slnn_tune, metric = "roc_auc")
-select_best(slnn_tune, metric = "roc_auc")
-show_best(slnn_tune, metric = "roc_auc")
 
 # 
-slnn_workflow_tuned <- slnn_workflow %>%
-  finalize_workflow(select_best(slnn_tune, metric = "roc_auc"))
+# autoplot(slnn_tune, metric = "accuracy")
+# select_best(slnn_tune, metric = "accuracy")
+# show_best(slnn_tune, metric = "accuracy")
+# 
+# slnn_workflow_tuned <- slnn_workflow %>% 
+#   finalize_workflow(select_best(slnn_tune, metric = "accuracy"))
 
-slnn_results <- fit(slnn_workflow_tuned, patients_train)
+# slnn_results <- fit(slnn_workflow_tuned, loan_train)
 # 
 # # loan_metric <- metric_set(accuracy)
 # 
-patients_predict <- predict(slnn_results, patients_testing, type = "prob") %>%
-  bind_cols(patients_testing %>% select(stay))
-
-roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`)
-
-roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
-  autoplot()
-
-# conf_mat(loan_predict, truth = stay, estimate = .pred_class)
+# loan_predict <- predict(slnn_results, loan_test) %>%
+#   bind_cols(loan_test %>% select(id))
