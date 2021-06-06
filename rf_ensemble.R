@@ -19,11 +19,6 @@ prep(patients_recipe) %>%
   bake(new_data = NULL)
 
 
-#Start Parallel
-library(doParallel)
-cl <- makePSOCKcluster(4)
-registerDoParallel(cl)
-
 
 # Define model ----
 
@@ -63,6 +58,11 @@ rf_tune5 <- rf_tune4
 # save(rf_tune4, rf_workflow4, file = "data/rf_tune4.rda")
 save(rf_tune5, file = "data/rf_tune5.rda")
 
+
+
+#Results
+
+
 load("data/rf_tune5.rda")
 # 
 autoplot(rf_tune5, metric = "roc_auc")
@@ -85,4 +85,5 @@ roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11
 roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
   autoplot()
 
-stopCluster(cl)
+
+
