@@ -31,6 +31,7 @@ corrplot::corrplot(cor(patients_correlation),
 ```
 
 
+
 Bar Graph of Stay Categories Graph of severity of illness and visitors with patient (for step_interact)
 
 ## Model fitting
