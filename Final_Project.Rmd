@@ -5,6 +5,15 @@ date: "6/6/2021"
 output: html_document
 ---
 
+```{r}
+library(tidyverse)
+library(corrplot)
+library(tidymodels)
+
+load("data/setup.rda")
+```
+
+
 ## Introduction
 
 Recently, the COVID-19 pandemic has highlighted a major problem that exists within our healthcare system: healthcare management. The scarcity of resources and inefficient distribution of necessary tools has raised the question of how we may streamline hospital management. An important parameter that may help inform such question is looking at patient length of stay and what factors may affect it. Thus, in this analysis, we developed and compared several models that attempts to predict the length of stay depending on several characteristics of the patient. For this project, we used a dataset containing information about COVID-19 hospitalizations. We expected to use the data to determine which factors may determine our outcome variable, length of stay. The dataset includes variables, such as the type of hospital, the city, region, how full the hospitals are, the ward type, and the bed grade. We plan to answer the predictive question, "How well can we predict the length of stay for each Covid-19 patient?" Since length of stay is categorical, we used a classification based approach as well as feature engineering, and determined that from the data we have, the best predictors are department, ward type, ward facility code, severity of illness, visitors with patient, age, and admission deposit. We used roc_auc as our metric to determine the best model.
@@ -13,7 +22,14 @@ A link to the data set: Prabhavlakar, Neha. (2020). AV: Healthcare Analytics II 
 
 ## EDA (2 -3 plots): (Kranti)
 
-    A short EDA was performed to visualize the distribution of the data. To explore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. The data was further visualized using boxplots and bar graphs. 
+    A short EDA was performed to visualize the distribution of the data. To explore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. The data was further visualized using boxplots and bar graphs.
+
+```{r}
+patients_correlation <- data.matrix(patients_train, rownames.force = NA)
+corrplot::corrplot(cor(patients_correlation),
+                   type = "lower")
+```
+
 
 Bar Graph of Stay Categories Graph of severity of illness and visitors with patient (for step_interact)
 
