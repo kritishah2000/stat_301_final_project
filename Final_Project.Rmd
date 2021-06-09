@@ -38,6 +38,7 @@ patients_correlation <- data.matrix(patients_data, rownames.force = NA)
 corrplot::corrplot(cor(patients_correlation),
                    type = "lower")
 ```
+
 The corrplot visually depicts the correlation of variables in the patients_train dataset. The larger the circle, the more negatively or positively correlated it is to a respective variable. A box with a small or no circle represents a zero or near zero correlation between two variables. Notably, the stay variable is not directly correlated with any single variable. 
 
 
@@ -46,6 +47,7 @@ patients_data %>%
   ggplot(aes(x = visitors_with_patient, fill = severity_of_illness)) +
   geom_bar(position = "fill")
 ```
+
 This bar graph was made for the two terms in the step_interact function in our recipe. The color codes display the proportion of severity of illness to how many visitors were with the patient during the stay. Notably. extreme illnesses had many visitors, while modern illnesses had near zero visitors in total.
 
 
