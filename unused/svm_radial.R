@@ -7,6 +7,18 @@ library(vcd)
 library(corrplot)
 library(corrr)
 library(stacks)
+ 
+set.seed(3013)
+
+# load required objects ----
+library(tidyverse)
+library(skimr)
+library(tidymodels)
+library(janitor)
+library(vcd)
+library(corrplot)
+library(corrr)
+library(stacks)
 library(textrecipes)
 
 
@@ -68,7 +80,7 @@ patients_recipe <- recipe(stay ~
                             department + ward_type +  ward_facility_code + severity_of_illness + 
                             visitors_with_patient + age + admission_deposit,
                           data = patients_train) %>%
-  # step_clean_levels(stay) %>% 
+  step_clean_levels(stay) %>% 
   step_other(all_nominal(), -all_outcomes()) %>%
   # step_dummy(all_nominal(), -all_outcomes(), -severity_of_illness, one_hot = TRUE) %>%
   # step_dummy(severity_of_illness) %>% 
@@ -76,14 +88,13 @@ patients_recipe <- recipe(stay ~
   step_interact(~ starts_with("severity_of_illness"):visitors_with_patient) %>%
   step_scale(all_numeric()) %>% 
   step_normalize(all_numeric())
-# 
-# prep(patients_recipe) %>% 
-#   bake(new_data = NULL)
+
 
 # Define model ----
-svm_poly_model <- svm_poly(
+svm_model <- svm_rbf(
   mode = "classification",
-  cost = tune()
+  cost = tune(),
+  rbf_sigma = tune()
 ) %>%
   set_engine("kernlab")
 
@@ -91,22 +102,40 @@ svm_poly_model <- svm_poly(
 # parameters(svm_model)
 
 # set-up tuning grid ----
-svm_params <- parameters(svm_poly_model)
+svm_params <- parameters(svm_model)
 
 # define grid
-svm_grid <- grid_regular(svm_params, levels = 3)
+svm_grid <- grid_regular(svm_params, levels = 5)
 
 # workflow ----
-svm_workflow_poly <- workflow() %>%
-  add_model(svm_poly_model) %>%
+svm_workflow_2 <- workflow() %>%
+  add_model(svm_model) %>%
   add_recipe(patients_recipe)
 
+# control settings ----
+
+# ctrl_grid <- control_stack_grid()
 
 # Tuning/fitting ----
-svm_poly_res <- svm_workflow_poly %>%
+svm_res_2 <- svm_workflow_2 %>%
   tune_grid(
     resamples = patients_folds,
     grid = svm_grid
+    # control = ctrl_grid
   )
 
-save(svm_poly_res, file = "svm_poly_results_2.rda")
+save(svm_res_2, file = "data/svm_results.rda")
+
+
+#show_best(svm_res, metric = "accuracy")
+
+#svm_res_2_workflow_tuned <- svm_workflow %>% 
+  #finalize_workflow(select_best(svm_res_2, metric = "accuracy"))
+
+#svm_res_2_results <- fit(svm_res_2_workflow_tuned, patients_train)
+
+#patients_metrics <- metric_set(roc_auc, accuracy)
+
+#predict(rf_results_knn, new_data = titanic_test, type = "prob") %>%
+  #bind_cols(titanic_test %>% select(survived)) %>%
+  #roc_auc(survived, .pred_Yes) 
