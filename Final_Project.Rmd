@@ -25,14 +25,29 @@ A link to the data set: Prabhavlakar, Neha. (2020). AV: Healthcare Analytics II 
     A short EDA was performed to visualize the distribution of the data. To explore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. The data was further visualized using boxplots and bar graphs.
 
 ```{r}
+patients_train %>%
+  ggplot(aes(x = stay)) +
+  geom_histogram(binwidth = 10, stat = "count")
+```
+A histogram depicting the stay 'length of days' category is depicted above. With the most prevalent stay category being 21-30 and the least prevalent being 0-10. 
+
+
+```{r}
 patients_correlation <- data.matrix(patients_train, rownames.force = NA)
 corrplot::corrplot(cor(patients_correlation),
                    type = "lower")
 ```
+The corrplot visually depicts the correlation of variables in the patients_train dataset. The larger the circle, the more negatively or positively correlated it is to a respective variable. A box with a small or no circle represents a zero or near zero correlation between two variables. Notably, the stay variable is not directly correlated with any single variable. 
 
 
+```{r}
+patients_train %>%
+  ggplot(aes(x = visitors_with_patient, fill = severity_of_illness)) +
+  geom_bar(position = "fill")
+```
+This bar graph was made for the two terms in the step_interact function in our recipe. The color codes display the proportion of severity of illness to how many visitors were with the patient during the stay. Notably. extreme illnesses had many visitors, while modern illnesses had near zero visitors in total.
 
-Bar Graph of Stay Categories Graph of severity of illness and visitors with patient (for step_interact)
+
 
 ## Model fitting
 
