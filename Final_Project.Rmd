@@ -14,9 +14,13 @@ output:
 library(tidyverse)
 library(corrplot)
 library(tidymodels)
+library(ggthemes)
+library(skimr)
+
 
 load("data/setup.rda")
 patients_data <- read_csv("data/processed/patients_data.csv")
+patients_data_unprocessed <- read_csv("data/unprocessed/train_data.csv")
 ```
 
 
@@ -31,14 +35,32 @@ We plan to answer the predictive question, “How well can we predict the length
 
 A link to the data set: Prabhavlakar, Neha. (2020). AV: Healthcare Analytics II [Data Set]. <https://www.kaggle.com/nehaprabhavalkar/av-healthcare-analytics-ii>
 
+
 ## EDA:
 
-A short EDA was performed to visualize the distribution of the data. To expore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. The data was further visualized using boxplots and bar graphs.
+A short EDA was performed to visualize the distribution of the data. To expore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. 
+
+```{r}
+skim_without_charts(patients_data_unprocessed)
+```
+
+
+The data was further visualized using boxplots and bar graphs.
 
 ```{r, message = F, warning = F}
 patients_data %>%
   ggplot(aes(x = stay)) +
-  geom_histogram(binwidth = 10, stat = "count")
+  geom_histogram(binwidth = 10, stat = "count") + 
+  labs(
+    x = "Stay", 
+    y = "Count", 
+    title = "Distribution of Stay"
+  ) + 
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14), 
+    axis.title = element_text(size = 12, face = "bold")
+  )
 ```
 
 A histogram depicting the stay 'length of days' category is depicted above. With the most prevalent stay category being 21-30 and the least prevalent being 0-10. 
@@ -50,21 +72,85 @@ corrplot::corrplot(cor(patients_correlation),
                    type = "lower")
 ```
 
-The corrplot visually depicts the correlation of variables in the patients_train dataset. The larger the circle, the more negatively or positively correlated it is to a respective variable. A box with a small or no circle represents a zero or near zero correlation between two variables. Notably, the stay variable is not directly correlated with any single variable. 
+The corrplot visually depicts the correlation of variables in the patients_train dataset. The larger the circle, the more negatively or positively correlated it is to a respective variable. A box with a small or no circle represents a zero or near zero correlation between two variables. The following variables shown in the corrplot were the ones we ultimately used in our recipe because of their correlation to ‘stay.’ We included severity_of_illness because of its interaction with visitors_with_patient despite it having a low correlation with stay.
 
 
 ```{r, message = F}
 patients_data %>%
   ggplot(aes(x = visitors_with_patient, fill = severity_of_illness)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") + 
+  labs(
+    x = "Visitors with Patient", 
+    y = "Distribution ", 
+    title = "Correlating Severity of Illness\nwith Number of Visitors per Patient"
+  ) + 
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14), 
+    axis.title = element_text(size = 12, face = "bold")
+  ) + 
+  scale_fill_discrete(name = "Severity of Illness")
 ```
 
 This bar graph was made for the two terms in the step_interact function in our recipe. The color codes display the proportion of severity of illness to how many visitors were with the patient during the stay. Notably. extreme illnesses had many visitors, while modern illnesses had near zero visitors in total.
 
 
+## Data tidying and splitting
+
+Upon reading in the data, we had to tidy the dataset to optimize the eventual roc_auc values. First, as shown in the code below, we filtered out the stay categories that were above 40. There were two reasons for doing so. First, there was so much data such that the run times were very long. By selecting this subset, it decreased the run time by hours. Furthermore, after 40 days, the distribution became much more skewed and edged towards outliers. Thus, by filtering the dataset for below 40 day stays, the outcome variable was much more normal and the roc_auc value was significantly improved. 
+
+```{r, eval = F}
+patients_data <- read_csv("data/unprocessed/train_data.csv") %>% 
+  clean_names()
+
+patients_data <- patients_data %>% 
+  filter(stay == "0-10" | stay == "11-20" | stay == "21-30" | stay == "31-40")
+```
+
+The data was split and stratified by the outcome (stay) to ensure equal distribution in both the training and testing data set.  Due to the data set being large, only 1% of the data was used in the training set. Further models tried on larger proportions of training data did not improve our roc_auc metric significantly yet increased run time by hours; the cost-benefit analysis let us believe that 1% was appropriate enough of a sample size. Since resampling methods increase the roc_auc of models and help reduce overfitting or underfitting of the data, repeated V-fold cross validation, with five folds and three repeats, was done on the training data set as shown in the code below. We also converted all of the categorical variables that would be used into factors to increase efficiency of the models. 
+
+```{r, eval = F}
+patients_split <- initial_split(data = patients_data, prop = 0.01, strata = stay)
+patients_train <- training(patients_split)
+patients_testing <- testing(patients_split)
+
+patients_train <- patients_train %>% 
+  mutate(
+    stay = as.factor(stay),
+    hospital_code = as.integer(hospital_code),
+    hospital_type_code = as.factor(hospital_type_code),
+    hospital_region_code = as.factor(hospital_region_code),
+    available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
+    department = as.factor(department),
+    bed_grade = as.factor(bed_grade),
+    severity_of_illness = as.factor(severity_of_illness),
+    visitors_with_patient = as.integer(visitors_with_patient),
+    age = as.factor(age),
+    type_of_admission = as.factor(type_of_admission)
+  )
+
+patients_testing <- patients_testing %>% 
+  mutate(
+    stay = as.factor(stay),
+    hospital_code = as.integer(hospital_code),
+    hospital_type_code = as.factor(hospital_type_code),
+    hospital_region_code = as.factor(hospital_region_code),
+    available_extra_rooms_in_hospital = as.integer(available_extra_rooms_in_hospital),
+    department = as.factor(department),
+    bed_grade = as.factor(bed_grade),
+    severity_of_illness = as.factor(severity_of_illness),
+    visitors_with_patient = as.integer(visitors_with_patient),
+    age = as.factor(age),
+    type_of_admission = as.factor(type_of_admission)
+  )
+
+patients_folds <- vfold_cv(patients_train, v = 5, repeats = 3, strata = stay)
+```
+
+
 ## Model fitting
 
-The data was split and stratified by the outcome to ensure equal distribution in both the training and testing data set.  Due to the data set being large, only 1% of the data was used in the training set. Further models tried on larger proportions of training data did not improve our roc_auc metric significantly yet increased run time by hours; the cost-benefit analysis let us believe that 1% was appropriate enough of a sample size. Since resampling methods increase the roc_auc of models and help reduce overfitting or underfitting of the data, repeated V-fold cross validation, with five folds and three repeats, was done on the training data set. 
+After this, a recipe was created. Upon running multiple variations of the recipe, inclusion of `department`, `ward_facility_code`, `severity_of_illness`, `visitors_with_patient`, `age`, and `admission_deposit` optimized the roc_auc the most. Because all of the selected variables were categorical excluding `visitors_with_patient` and `admission_deposit`, all nominal variables were dummy encoded. We decided not to one-hot encode the variables because it caused errors with the interaction step. During the initial EDA, we had noticed that `severity_of_illness` was interestingly correlated with `visitors_with_patient` (higher severity of illness was correlated with more visitors with patients). Thus, we included an interaction term between these variables. Additionally, especially for categorical variables with rarer categories, we used `step_other()` to collapse infrequent categories as `other`. Finally, `step_scale()` was used to normalize the numeric data to have a standard deviation of one while `step_normalize()` was used to center the data such that it would have a mean of zero. 
 
 ```{r}
 patients_recipe <- recipe(stay ~  
@@ -80,9 +166,6 @@ patients_recipe <- recipe(stay ~
   step_scale(all_numeric()) %>%
   step_normalize(all_numeric())
 ```
-
-
-After this, a recipe was created. Upon running multiple variations of the recipe, inclusion of `department`, `ward_facility_code`, `severity_of_illness`, `visitors_with_patient`, `age`, and `admission_deposit` optimized the roc_auc the most. Because all of the selected variables were categorical excluding `visitors_with_patient` and `admission_deposit`, all nominal variables were dummy encoded. We decided not to one-hot encode the variables because it caused errors with the interaction step. During the initial EDA, we had noticed that `severity_of_illness` was interestingly correlated with `visitors_with_patient` (higher severity of illness was correlated with more visitors with patients). Thus, we included an interaction term between these variables. Additionally, especially for categorical variables with rarer categories, we used `step_other()` to collapse infrequent categories as `other`. Finally, `step_scale()` was used to normalize the numeric data to have a standard deviation of one while `step_normalize()` was used to center the data such that it would have a mean of zero. 
 
 
 Five different models were created for this data set which included random forest, single layer neural network, boosted tree, and support vector machine models (radial and polynomial).
@@ -142,4 +225,8 @@ Additionally, due to errors not yet resolved in Stacks, we did not end up trying
 Furthermore, we had to filter our dataset to reduce its size to reduce run time of our models and to make our outcome variable, stay, more normally distributed. A future direction would be to eventually fine tune our model to predict the length of stay of patients who are outliers (stay past 40 days in the hospital).
 	
 Overall, in this project we developed and compared several models attempting to predict length of stay for the purposes of streamlining healthcare management and resource distribution. 
+
+## Github Repo Link
+
+[Final Project](https://github.com/kritishah2000/stat_301_final_project){target="_blank"}
 
