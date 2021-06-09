@@ -25,16 +25,15 @@ patients_data <- read_csv("data/processed/patients_data.csv")
 
 ## Introduction
 
-A dataset containing information about COVID-19 hospitalizations was used for this project. We expected to use the data to determine which factors may determine our outcome variable, length of stay. The dataset includes variables, such as the type of hospital, the city, region, how full the hospitals are, the ward type, and the bed grade. 
+A dataset containing information about COVID-19 hospitalizations was used for this project. We expected to use the data to determine which factors may determine our outcome variable, length of stay. The dataset includes variables, such as the type of hospital, the city, region, how full the hospitals are, the ward type, and the bed grade.
 
-We plan to answer the predictive question, “How well can we predict the length of stay for each Covid-19 patient?” Since length of stay is categorical, we used a classification based approach as well as feature engineering, and determined that from the data we have, the best predictors are department, ward type, ward facility code, severity of illness, visitors with patient, age, and admission deposit. We used roc_auc as our metric to determine the best model. 
+We plan to answer the predictive question, "How well can we predict the length of stay for each Covid-19 patient?" Since length of stay is categorical, we used a classification based approach as well as feature engineering, and determined that from the data we have, the best predictors are department, ward type, ward facility code, severity of illness, visitors with patient, age, and admission deposit. We used roc_auc as our metric to determine the best model.
 
 ## EDA and Model Fitting
 
-A short EDA (not shown) was performed to visualize the distribution of the data. We excluded `Bed Grade` and `City_Code_Patient` since these two variables had missing values. The data was further visualized using boxplots and bar graphs. 
+A short EDA (not shown) was performed to visualize the distribution of the data. We excluded `Bed Grade` and `City_Code_Patient` since these two variables had missing values. The data was further visualized using boxplots and bar graphs.
 
-1% of the data was split and stratified by the outcome to ensure equal distribution in both the training and testing data set. Repeated V-fold cross validation, with five folds and three repeats, was performed on the training data set to increase the roc_auc and help reduce overfitting/underfitting. After this, a recipe was created which included the following predictors: `department`, `ward_facility_code`, `severity_of_illness`, `visitors_with_patient`, `age`, and `admission_deposit`. All nominal variables were dummy encoded and an interaction term between `severity_of_illness` and `visitors_with_patient`was created (higher severity of illness was correlated with more visitors with patients).  Additionally, we used `step_other()` to collapse infrequent categories as `other`. Finally, `step_scale()` and `step_normalize()` were used to normalize and center the data.
-Five different models were created. There is a table below summarizing their roc_auc values on the training data set.
+1% of the data was split and stratified by the outcome to ensure equal distribution in both the training and testing data set. Repeated V-fold cross validation, with five folds and three repeats, was performed on the training data set to increase the roc_auc and help reduce overfitting/underfitting. After this, a recipe was created which included the following predictors: `department`, `ward_facility_code`, `severity_of_illness`, `visitors_with_patient`, `age`, and `admission_deposit`. All nominal variables were dummy encoded and an interaction term between `severity_of_illness` and `visitors_with_patient`was created (higher severity of illness was correlated with more visitors with patients). Additionally, we used `step_other()` to collapse infrequent categories as `other`. Finally, `step_scale()` and `step_normalize()` were used to normalize and center the data. Five different models were created. There is a table below summarizing their roc_auc values on the training data set.
 
 +-------------------------+-----------------------------------+--------------------+-------------------------+
 | **Model**               | **Roc_auc value on training set** | **Standard Error** | **Tuning Parameter(s)** |
@@ -80,8 +79,10 @@ roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_
   autoplot()
 ```
 
-
 ## Conclusion
-  
-  The random forest was slightly overfitted based on the roc_auc values. Its final roc_auc value of 0.613 confirms that our model worked well, although it can still be improved, at predicting the length of stay from 0 to 40 days. One major insight is that the random forest does the best at predicting the stay between 31 to 40 days whereas it does the worst between 11 to 20 days. 
-There are several limitations that hindered our model’s performance. One is how the data was collected. Majority of the variables are categorical and binned which makes the data less specific and difficult to model because there are not many transformations that can be done on such variables. Another limitation is that we did not create models such as MARS and an ensemble due to unresolved errors in stacks. Additionally, we reduced the data size to decrease the run time of the different models and to make the outcome variable more normally distributed. In the future, we would like to fine tune our model to predict the length of stay past the 40 days mark. Overall, we created and compared several models to predict the length of stay for the purposes of streamlining healthcare management and resource distribution. 
+
+The random forest was slightly overfitted based on the roc_auc values. Its final roc_auc value of 0.613 confirms that our model worked well, although it can still be improved, at predicting the length of stay from 0 to 40 days. One major insight is that the random forest does the best at predicting the stay between 31 to 40 days whereas it does the worst between 11 to 20 days. There are several limitations that hindered our model's performance. One is how the data was collected. Majority of the variables are categorical and binned which makes the data less specific and difficult to model because there are not many transformations that can be done on such variables. Another limitation is that we did not create models such as MARS and an ensemble due to unresolved errors in stacks. Additionally, we reduced the data size to decrease the run time of the different models and to make the outcome variable more normally distributed. In the future, we would like to fine tune our model to predict the length of stay past the 40 days mark. Overall, we created and compared several models to predict the length of stay for the purposes of streamlining healthcare management and resource distribution.
+
+## Link to GitHub
+
+Our repo: <https://github.com/kritishah2000/stat_301_final_project.git>
