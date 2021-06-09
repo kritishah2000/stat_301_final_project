@@ -11,6 +11,7 @@ library(corrplot)
 library(tidymodels)
 
 load("data/setup.rda")
+patients_data <- read_csv("data/processed/patients_data.csv")
 ```
 
 
@@ -25,7 +26,7 @@ A link to the data set: Prabhavlakar, Neha. (2020). AV: Healthcare Analytics II 
     A short EDA was performed to visualize the distribution of the data. To explore missingness, the function `skim_without_charts` was used. The only variables with missingness are `Bed Grade` and `City_Code_Patient`. We excluded both of these variables. The data was further visualized using boxplots and bar graphs.
 
 ```{r}
-patients_train %>%
+patients_data %>%
   ggplot(aes(x = stay)) +
   geom_histogram(binwidth = 10, stat = "count")
 ```
@@ -33,7 +34,7 @@ A histogram depicting the stay 'length of days' category is depicted above. With
 
 
 ```{r}
-patients_correlation <- data.matrix(patients_train, rownames.force = NA)
+patients_correlation <- data.matrix(patients_data, rownames.force = NA)
 corrplot::corrplot(cor(patients_correlation),
                    type = "lower")
 ```
@@ -41,7 +42,7 @@ The corrplot visually depicts the correlation of variables in the patients_train
 
 
 ```{r}
-patients_train %>%
+patients_data %>%
   ggplot(aes(x = visitors_with_patient, fill = severity_of_illness)) +
   geom_bar(position = "fill")
 ```
