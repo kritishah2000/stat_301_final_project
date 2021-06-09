@@ -63,11 +63,11 @@ Five different models were created for this data set which included random fores
 +-------------------------+-----------------------------------+--------------------+-------------------------+
 | **Model**               | **Roc_auc value on training set** | **Standard Error** | **Tuning Parameter(s)** |
 +=========================+===================================+====================+=========================+
-| Random Forest           | 0.631                             | 0.00465            | Mtry = 20               |
+| Random Forest           | 0.631                             | 0.00465            | mtry = 20               |
 |                         |                                   |                    |                         |
-|                         |                                   |                    | Min_n = 40              |
+|                         |                                   |                    | min_n = 40              |
 |                         |                                   |                    |                         |
-|                         |                                   |                    | N = 15                  |
+|                         |                                   |                    | n = 15                  |
 +-------------------------+-----------------------------------+--------------------+-------------------------+
 | SVM Polynomial          | 0.584                             | 0.00615            | cost = 0.177            |
 +-------------------------+-----------------------------------+--------------------+-------------------------+
@@ -79,11 +79,11 @@ Five different models were created for this data set which included random fores
 |                         |                                   |                    |                         |
 |                         |                                   |                    | penalty = 1e+ 0         |
 +-------------------------+-----------------------------------+--------------------+-------------------------+
-| Boosted Tree            | 0.614                             | 0.00664            | Mtry = 8                |
+| Boosted Tree            | 0.614                             | 0.00664            | mtry = 8                |
 |                         |                                   |                    |                         |
-|                         |                                   |                    | Min_n = 1               |
+|                         |                                   |                    | min_n = 1               |
 |                         |                                   |                    |                         |
-|                         |                                   |                    | N = 15                  |
+|                         |                                   |                    | n = 15                  |
 +-------------------------+-----------------------------------+--------------------+-------------------------+
 
 Based on these values, the Random Forest had the best roc_auc value. This random forest model was then taken to be fitted on the training data set and predicted on the testing data set. The roc_auc value on the testing data set was 0.613, and below a plot of the roc_auc curve for each categorical option of stay (range of days spent in hospital) is presented.
