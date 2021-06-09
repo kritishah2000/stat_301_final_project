@@ -1,0 +1,87 @@
+---
+title: "Executive Summary"
+author: "Angie Jang, Kranti Rumalla, Kriti Shah, Enat Ayele"
+date: "6/6/2021"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(corrplot)
+library(tidymodels)
+
+load("data/setup.rda")
+patients_data <- read_csv("data/processed/patients_data.csv")
+```
+
+## Introduction
+
+A dataset containing information about COVID-19 hospitalizations was used for this project. We expected to use the data to determine which factors may determine our outcome variable, length of stay. The dataset includes variables, such as the type of hospital, the city, region, how full the hospitals are, the ward type, and the bed grade. 
+
+We plan to answer the predictive question, “How well can we predict the length of stay for each Covid-19 patient?” Since length of stay is categorical, we used a classification based approach as well as feature engineering, and determined that from the data we have, the best predictors are department, ward type, ward facility code, severity of illness, visitors with patient, age, and admission deposit. We used roc_auc as our metric to determine the best model. 
+
+## EDA and Model Fitting
+
+A short EDA (not shown) was performed to visualize the distribution of the data. We excluded `Bed Grade` and `City_Code_Patient` since these two variables had missing values. The data was further visualized using boxplots and bar graphs. 
+
+1% of the data was split and stratified by the outcome to ensure equal distribution in both the training and testing data set. Repeated V-fold cross validation, with five folds and three repeats, was performed on the training data set to increase the roc_auc and help reduce overfitting/underfitting. After this, a recipe was created which included the following predictors: `department`, `ward_facility_code`, `severity_of_illness`, `visitors_with_patient`, `age`, and `admission_deposit`. All nominal variables were dummy encoded and an interaction term between `severity_of_illness` and `visitors_with_patient`was created (higher severity of illness was correlated with more visitors with patients).  Additionally, we used `step_other()` to collapse infrequent categories as `other`. Finally, `step_scale()` and `step_normalize()` were used to normalize and center the data.
+Five different models were created. There is a table below summarizing their roc_auc values on the training data set.
+
++-------------------------+-----------------------------------+--------------------+-------------------------+
+| **Model**               | **Roc_auc value on training set** | **Standard Error** | **Tuning Parameter(s)** |
++=========================+===================================+====================+=========================+
+| Random Forest           | 0.631                             | 0.00465            | mtry = 20               |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | min_n = 40              |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | n = 15                  |
++-------------------------+-----------------------------------+--------------------+-------------------------+
+| SVM Polynomial          | 0.584                             | 0.00615            | cost = 0.177            |
++-------------------------+-----------------------------------+--------------------+-------------------------+
+| SVM Radial              | 0.596                             | 0.00397            | cost = 2.38             |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | rbg_sigma = 0.00316     |
++-------------------------+-----------------------------------+--------------------+-------------------------+
+| Single Layer Neural Net | 0.608                             | 0.00440            | hidden_units = 5        |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | penalty = 1e+ 0         |
++-------------------------+-----------------------------------+--------------------+-------------------------+
+| Boosted Tree            | 0.614                             | 0.00664            | mtry = 8                |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | min_n = 1               |
+|                         |                                   |                    |                         |
+|                         |                                   |                    | n = 15                  |
++-------------------------+-----------------------------------+--------------------+-------------------------+
+
+Based on the roc_auc values, the random forest performed the best with a value of 0.631. It was fitted on the training data and predicted on the testing data to get a final roc_auc value of 0.613. The following plot was created to visualize the roc_auc curve for the different categories of the length of stay.
+
+```{r}
+load("data/rf_tune5.rda")
+load("data/rf_workflow.rda")
+
+rf_workflow_tuned <- rf_workflow4 %>%
+  finalize_workflow(select_best(rf_tune5, metric = "roc_auc"))
+
+rf_results <- fit(rf_workflow_tuned, patients_train)
+
+patients_predict <- predict(rf_results, patients_testing, type = "prob") %>%
+  bind_cols(patients_testing %>% select(stay))
+
+roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
+  autoplot()
+```
+
+
+## Conclusion
+  
+  The random forest was slightly overfitted based on the roc_auc values. Its final roc_auc value of 0.613 confirms that our model worked well, although it can still be improved, at predicting the length of stay from 0 to 40 days. One major insight is that the random forest does the best at predicting the stay between 31 to 40 days whereas it does the worst between 11 to 20 days. 
+There are several limitations that hindered our model’s performance. One is how the data was collected. Majority of the variables are categorical and binned which makes the data less specific and difficult to model because there are not many transformations that can be done on such variables. Another limitation is that we did not create models such as MARS and an ensemble due to unresolved errors in stacks. Additionally, we reduced the data size to decrease the run time of the different models and to make the outcome variable more normally distributed. In the future, we would like to fine tune our model to predict the length of stay past the 40 days mark. Overall, we created and compared several models to predict the length of stay for the purposes of streamlining healthcare management and resource distribution. 
