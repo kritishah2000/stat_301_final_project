@@ -50,24 +50,22 @@ svm_res_2 <- svm_workflow_2 %>%
 
 save(svm_res_2, file = "data/svm_results_ensemble.rda")
 
-#load("data/svm_results_ensemble.rda")
+load("data/svm_results_ensemble.rda")
 
-#show_best(svm_res, metric = "accuracy")
+autoplot(svm_res_2, metric = "roc_auc")
+select_best(svm_res_2, metric = "roc_auc")
+show_best(svm_res_2, metric = "roc_auc")
 
-#autoplot(svm_res_2, metric = "roc_auc")
-#select_best(svm_res_2, metric = "roc_auc")
-#show_best(svm_res_2, metric = "roc_auc")
+svm_workflow_tuned <- svm_workflow_2 %>%
+finalize_workflow(select_best(svm_res_2, metric = "roc_auc"))
 
-#svm_workflow_tuned <- svm_workflow_2 %>%
-  #finalize_workflow(select_best(svm_res_2, metric = "roc_auc"))
+svm_results <- fit(svm_workflow_tuned, patients_train)
 
-#svm_results <- fit(svm_workflow_tuned, patients_train)
+patients_predict <- predict(svm_results, patients_testing, type = "prob") %>%
+  bind_cols(patients_testing %>% select(stay))
 
-#patients_predict <- predict(svm_results, patients_testing, type = "prob") %>%
-  #bind_cols(patients_testing %>% select(stay))
+roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`)
 
-#roc_auc(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`)
-
-#roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>% 
-  #autoplot()
+roc_curve(patients_predict, truth = patients_testing$stay, `.pred_0-10`, `.pred_11-20`, `.pred_21-30`, `.pred_31-40`) %>%
+  autoplot()
 
