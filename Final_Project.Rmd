@@ -44,7 +44,7 @@ patients_data %>%
 A histogram depicting the stay 'length of days' category is depicted above. With the most prevalent stay category being 21-30 and the least prevalent being 0-10. 
 
 
-```{r, message = F}
+```{r, message = F, fig.width = 6, fig.height = 6}
 patients_correlation <- data.matrix(patients_data, rownames.force = NA)
 corrplot::corrplot(cor(patients_correlation),
                    type = "lower")
